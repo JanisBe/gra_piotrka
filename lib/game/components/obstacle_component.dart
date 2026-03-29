@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/text.dart';
@@ -15,14 +16,16 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
   final int cols;     // 1-6
   final int rows;     // 1-6
 
-  static final TextPaint _paint = TextPaint(
-    style: const TextStyle(
-      fontFamily: 'Courier',
-      fontSize: fontSize,
-      color: Colors.white,
-      height: 1.0,
-    ),
-  );
+  late final TextPaint _paint;
+
+  static const List<Color> _obstacleColors = [
+    Color(0xFFDE1040),
+    Color(0xFF07F2C7),
+    Color(0xFFE6FF05),
+    Color(0xFF5BA0F5),
+    Color(0xFFF77205),
+  ];
+  static final _random = Random();
 
   ObstacleComponent({
     required Vector2 position,
@@ -32,7 +35,17 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
   }) : super(
           position: position,
           size: Vector2(cols * charW, rows * charH),
-        );
+        ) {
+    final color = _obstacleColors[_random.nextInt(_obstacleColors.length)];
+    _paint = TextPaint(
+      style: TextStyle(
+        fontFamily: 'Courier',
+        fontSize: fontSize,
+        color: color,
+        height: 1.0,
+      ),
+    );
+  }
 
   @override
   Future<void> onLoad() async {
@@ -52,6 +65,15 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
     }
 
     // Solid hitbox for collision with player.
-    add(RectangleHitbox(size: size, isSolid: true));
+    // Zmniejszamy hitbox, by kolizje nie były odczytywane przedwcześnie (margines na puste znaki)
+    const shrinkY = 4.0;
+    const shrinkX = 4.0;
+    add(
+      RectangleHitbox(
+        size: Vector2(size.x - 2 * shrinkX, size.y - 2 * shrinkY),
+        position: Vector2(shrinkX, shrinkY),
+        isSolid: true,
+      ),
+    );
   }
 }

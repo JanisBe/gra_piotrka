@@ -16,7 +16,7 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
   final VoidCallback onExit;
   final VoidCallback onNextLevel;
 
-  static const double levelDurationSeconds = 60.0;
+  static const double levelDurationSeconds = 50.0;
   double _elapsed = 0;
   double get progress => (_elapsed / levelDurationSeconds).clamp(0.0, 1.0);
   bool _levelComplete = false;

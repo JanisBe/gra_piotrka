@@ -32,28 +32,60 @@ class PlayerComponent extends PositionComponent with CollisionCallbacks {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final paint = TextPaint(
+    final tailPaint = TextPaint(
       style: const TextStyle(
         fontFamily: 'Courier',
         fontSize: _fontSize,
-        color: Colors.white,
+        color: Colors.yellow,
+        height: 1.2,
+      ),
+    );
+    final bodyPaint = TextPaint(
+      style: const TextStyle(
+        fontFamily: 'Courier',
+        fontSize: _fontSize,
+        color: Colors.orange,
+        height: 1.2,
+      ),
+    );
+    final nosePaint = TextPaint(
+      style: const TextStyle(
+        fontFamily: 'Courier',
+        fontSize: _fontSize,
+        color: Colors.red,
         height: 1.2,
       ),
     );
 
-    await add(
-      TextComponent(
-        text: '>==>', 
-        textRenderer: paint,
-        anchor: Anchor.centerLeft,
-        position: Vector2(0, _glyphHeight / 2),
-      ),
+    final tailComp = TextComponent(
+      text: '>',
+      textRenderer: tailPaint,
+      anchor: Anchor.centerLeft,
     );
+    final bodyComp = TextComponent(
+      text: '==',
+      textRenderer: bodyPaint,
+      anchor: Anchor.centerLeft,
+    );
+    final noseComp = TextComponent(
+      text: '>',
+      textRenderer: nosePaint,
+      anchor: Anchor.centerLeft,
+    );
+
+    tailComp.position = Vector2(0, _glyphHeight / 2);
+    bodyComp.position = Vector2(tailComp.size.x, _glyphHeight / 2);
+    noseComp.position = Vector2(tailComp.size.x + bodyComp.size.x, _glyphHeight / 2);
+
+    await add(tailComp);
+    await add(bodyComp);
+    await add(noseComp);
 
     await add(
       RectangleHitbox(
-        size: Vector2(_glyphWidth, _glyphHeight - 8),
-        position: Vector2(0, 4),
+        // Zmniejszamy hitbox statku by obejmował faktyczny znak '>==>' (okrągło 45x12px).
+        size: Vector2(45, 12),
+        position: Vector2(2, 6),
         anchor: Anchor.topLeft,
       ),
     );

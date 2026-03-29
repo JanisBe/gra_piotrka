@@ -4,8 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:gra_piotrka/game/corridor_game.dart';
 import 'package:gra_piotrka/screens/main_menu_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
   runApp(const AirplaneApp());
 }
 
