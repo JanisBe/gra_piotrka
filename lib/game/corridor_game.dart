@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:gra_piotrka/game/components/corridor_generator.dart';
 import 'package:gra_piotrka/game/components/player_component.dart';
 import 'package:gra_piotrka/game/components/explosion_component.dart';
+import 'package:gra_piotrka/game/components/bullet_component.dart';
 
 abstract class GameObserver {
   void onGameUpdate();
@@ -15,6 +16,7 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
   final int level;
   final VoidCallback onExit;
   final VoidCallback onNextLevel;
+  final int initialBullets;
 
   static const double levelDurationSeconds = 50.0;
   double _elapsed = 0;
@@ -26,6 +28,8 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
   final double _shakeDuration = 0.4;
   final double _shakeMagnitude = 6.0;
   final Random _rng = Random();
+
+  int bullets = 10;
 
   // NOTE: NOT final – must be reassignable on restart.
   late PlayerComponent player;
@@ -39,7 +43,10 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
     required this.level,
     required this.onExit,
     required this.onNextLevel,
-  });
+    required this.initialBullets,
+  }) {
+    bullets = initialBullets;
+  }
 
   @override
   Color backgroundColor() => Colors.black;
@@ -124,6 +131,7 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
     _gameOver = false;
     _levelComplete = false;
     _shakeTimer = 0;
+    bullets = initialBullets; // Reset to what it was at start of level
     camera.viewfinder.position = Vector2.zero();
 
     removeAll(children.toList());
@@ -140,4 +148,17 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
     overlays.add('hud');
     resumeEngine();
   }
+
+  void fireBullet() {
+    if (bullets > 0 && !_gameOver && !_levelComplete) {
+      bullets--;
+      // Spawn bullet at player's nose
+      add(
+        BulletComponent(
+          position: player.position.clone()..add(Vector2(player.size.x, 0)),
+        ),
+      );
+    }
+  }
 }
+

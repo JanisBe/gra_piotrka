@@ -23,11 +23,17 @@ class AirplaneApp extends StatefulWidget {
 class _AirplaneAppState extends State<AirplaneApp> {
   bool _gameStarted = false;
   int _currentLevel = 1;
+  int _bullets = 10;
 
-  void _startGame(int level) {
+  void _startGame(int level, {int carriedBullets = 0}) {
     setState(() {
       _currentLevel = level;
       _gameStarted = true;
+      if (level == 1) {
+        _bullets = 10;
+      } else {
+        _bullets = carriedBullets + 10;
+      }
     });
   }
 
@@ -53,8 +59,9 @@ class _AirplaneAppState extends State<AirplaneApp> {
           ? _GamePage(
               key: ValueKey(_currentLevel),
               level: _currentLevel,
+              initialBullets: _bullets,
               onExit: _exitToMenu,
-              onNextLevel: () => _startGame(_currentLevel + 1),
+              onNextLevel: (remaining) => _startGame(_currentLevel + 1, carriedBullets: remaining),
             )
           : MainMenuScreen(onStart: () => _startGame(1)),
     );
@@ -64,12 +71,14 @@ class _AirplaneAppState extends State<AirplaneApp> {
 /// Widget that hosts the Flame game with Flutter overlays.
 class _GamePage extends StatefulWidget {
   final int level;
+  final int initialBullets;
   final VoidCallback onExit;
-  final VoidCallback onNextLevel;
+  final void Function(int) onNextLevel;
 
   const _GamePage({
     super.key,
     required this.level,
+    required this.initialBullets,
     required this.onExit,
     required this.onNextLevel,
   });
@@ -88,7 +97,8 @@ class _GamePageState extends State<_GamePage> {
     _game = CorridorGame(
       level: widget.level,
       onExit: widget.onExit,
-      onNextLevel: widget.onNextLevel,
+      onNextLevel: () => widget.onNextLevel(_game.bullets),
+      initialBullets: widget.initialBullets,
     );
   }
 
@@ -132,8 +142,12 @@ class _GamePageState extends State<_GamePage> {
             );
           },
           'levelComplete': (context, game) {
+            final g = game as CorridorGame;
             return _LevelCompleteOverlay(
-              onNextLevel: widget.onNextLevel,
+              onNextLevel: () {
+                g.overlays.remove('levelComplete');
+                widget.onNextLevel(g.bullets);
+              },
               onExit: widget.onExit,
             );
           },
@@ -204,9 +218,27 @@ class _HudOverlayState extends State<_HudOverlay> implements GameObserver {
               ),
             ),
           ),
+          // -------- Ammo label --------
+          Positioned(
+            top: 48,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Text(
+                'AMUNICJA: ${widget.game.bullets}',
+                style: const TextStyle(
+                  fontFamily: 'Courier',
+                  color: Colors.white,
+                  fontSize: 14,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
           // -------- UP button --------
           Positioned(
-            bottom: 24,
+            bottom: 90,
             right: 24,
             child: _GameButton(
               label: '▲ GÓRA',
@@ -217,11 +249,21 @@ class _HudOverlayState extends State<_HudOverlay> implements GameObserver {
           // -------- DOWN button --------
           Positioned(
             bottom: 24,
-            left: 24,
+            right: 24,
             child: _GameButton(
               label: '▼ DÓŁ',
               onDown: () => widget.game.player.startMovingDown(),
               onUp: () => widget.game.player.stopMovingDown(),
+            ),
+          ),
+          // -------- FIRE button --------
+          Positioned(
+            bottom: 24,
+            left: 24,
+            child: _GameButton(
+              label: 'OGIEŃ',
+              onDown: () => widget.game.fireBullet(),
+              onUp: () {},
             ),
           ),
         ],

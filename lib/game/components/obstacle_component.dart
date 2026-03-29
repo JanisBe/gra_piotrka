@@ -76,4 +76,46 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
       ),
     );
   }
+
+  void takeHit(double hitY) {
+    // 60px hole centered at hitY 
+    final holeTop = hitY - 30; // Absolute Y
+    final holeBottom = hitY + 30; // Absolute Y
+
+    final myTop = position.y;
+    final myBottom = position.y + size.y;
+
+    // We split into top piece and bottom piece
+    // Top piece goes from myTop to holeTop
+    if (holeTop > myTop + charH) {
+      final topRows = ((holeTop - myTop) / charH).floor();
+      if (topRows > 0) {
+        parent?.add(ObstacleComponent(
+          position: Vector2(position.x, position.y),
+          char: char,
+          cols: cols,
+          rows: topRows,
+        ));
+      }
+    }
+
+    // Bottom piece goes from holeBottom to myBottom
+    if (myBottom > holeBottom + charH) {
+      final bottomRows = ((myBottom - holeBottom) / charH).floor();
+      if (bottomRows > 0) {
+        // bottom Y
+        final bottomPieceY = myBottom - (bottomRows * charH);
+        parent?.add(ObstacleComponent(
+          position: Vector2(position.x, bottomPieceY),
+          char: char,
+          cols: cols,
+          rows: bottomRows,
+        ));
+      }
+    }
+
+    // Replace myself with the pieces
+    removeFromParent();
+  }
 }
+
