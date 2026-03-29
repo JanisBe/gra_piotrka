@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gra_piotrka/game/components/corridor_generator.dart';
 import 'package:gra_piotrka/game/components/player_component.dart';
+import 'package:gra_piotrka/game/components/explosion_component.dart';
 
 abstract class GameObserver {
   void onGameUpdate();
@@ -97,7 +98,14 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
     if (_gameOver || _levelComplete) return;
     _gameOver = true;
     _shakeTimer = _shakeDuration;
-    Future.delayed(const Duration(milliseconds: 500), () {
+
+    // Spawn ASCII explosion at player position
+    add(ExplosionComponent(position: player.position.clone()));
+    
+    // Remove the player so it looks like they exploded
+    player.removeFromParent();
+
+    Future.delayed(const Duration(milliseconds: 800), () {
       overlays.remove('hud');
       overlays.add('gameOver');
       pauseEngine();
