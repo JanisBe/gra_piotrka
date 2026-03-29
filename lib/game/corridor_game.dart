@@ -108,7 +108,7 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
 
     // Spawn ASCII explosion at player position
     add(ExplosionComponent(position: player.position.clone()));
-    
+
     // Remove the player so it looks like they exploded
     player.removeFromParent();
 
@@ -161,4 +161,3 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
     }
   }
 }
-

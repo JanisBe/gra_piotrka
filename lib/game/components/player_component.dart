@@ -75,7 +75,8 @@ class PlayerComponent extends PositionComponent with CollisionCallbacks {
 
     tailComp.position = Vector2(0, _glyphHeight / 2);
     bodyComp.position = Vector2(tailComp.size.x, _glyphHeight / 2);
-    noseComp.position = Vector2(tailComp.size.x + bodyComp.size.x, _glyphHeight / 2);
+    noseComp.position =
+        Vector2(tailComp.size.x + bodyComp.size.x, _glyphHeight / 2);
 
     await add(tailComp);
     await add(bodyComp);

@@ -27,7 +27,7 @@ class ExplosionComponent extends PositionComponent {
     for (var i = 0; i < particleCount; i++) {
       final char = _chars[_rng.nextInt(_chars.length)];
       final color = _colors[_rng.nextInt(_colors.length)];
-      
+
       // Random direction and distance
       final angle = _rng.nextDouble() * 2 * pi;
       final distance = 40.0 + _rng.nextDouble() * 100.0;

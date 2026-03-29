@@ -50,47 +50,50 @@ class _MainMenuScreenState extends State<MainMenuScreen>
           ),
         ),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // ASCII title art
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: _FancyAsciiArt(),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                '>===>  SAMOLOTY  <===<',
-                style: GoogleFonts.robotoMono(
-                  color: Colors.white,
-                  fontSize: 22,
-                  letterSpacing: 6,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-              const SizedBox(height: 12),
-              FadeTransition(
-                opacity: _blink,
-                child: Text(
-                  '~ Moja gra o lataniu samolotem ~',
-                  style: GoogleFonts.robotoMono(
-                    color: Colors.white54,
-                    fontSize: 13,
-                    letterSpacing: 4,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // ASCII title art
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: _FancyAsciiArt(),
                   ),
                 ),
-              ),
-              const SizedBox(height: 72),
-              _AsciiButton(label: '[ START ]', onTap: widget.onStart),
-              const SizedBox(height: 24),
-              _AsciiButton(
-                label: '[ KONIEC ]',
-                onTap: () => exit(0),
-              ),
-            ],
+                const SizedBox(height: 24),
+                Text(
+                  '>===>  SAMOLOTY  <===<',
+                  style: GoogleFonts.robotoMono(
+                    color: Colors.white,
+                    fontSize: 22,
+                    letterSpacing: 6,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                FadeTransition(
+                  opacity: _blink,
+                  child: Text(
+                    '~ Moja gra o lataniu samolotem ~',
+                    style: GoogleFonts.robotoMono(
+                      color: Colors.white54,
+                      fontSize: 13,
+                      letterSpacing: 4,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                _AsciiButton(label: '[ START ]', onTap: widget.onStart),
+                const SizedBox(height: 24),
+                _AsciiButton(
+                  label: '[ KONIEC ]',
+                  onTap: () => exit(0),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -129,7 +132,8 @@ class _FancyAsciiArt extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 10,
                     height: 1.0,
-                    fontWeight: char == '█' ? FontWeight.bold : FontWeight.normal,
+                    fontWeight:
+                        char == '█' ? FontWeight.bold : FontWeight.normal,
                     shadows: char == '█'
                         ? [
                             const Shadow(

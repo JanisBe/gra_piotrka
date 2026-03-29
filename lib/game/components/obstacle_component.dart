@@ -12,9 +12,9 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
   static const double charH = 18.0;
   static const double fontSize = 16.0;
 
-  final String char;  // the single character to tile
-  final int cols;     // 1-6
-  final int rows;     // 1-6
+  final String char; // the single character to tile
+  final int cols; // 1-6
+  final int rows; // 1-6
 
   late final TextPaint _paint;
 
@@ -78,7 +78,7 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
   }
 
   void takeHit(double hitY) {
-    // 60px hole centered at hitY 
+    // 60px hole centered at hitY
     final holeTop = hitY - 30; // Absolute Y
     final holeBottom = hitY + 30; // Absolute Y
 
@@ -118,4 +118,3 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
     removeFromParent();
   }
 }
-

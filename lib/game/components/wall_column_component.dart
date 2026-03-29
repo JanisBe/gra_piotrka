@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 /// A wall column rendered as a vertical strip of '#' characters.
 /// Each column has a RectangleHitbox so the player can collide with it.
-class WallColumnComponent extends PositionComponent
-    with CollisionCallbacks {
+class WallColumnComponent extends PositionComponent with CollisionCallbacks {
   static final TextPaint _wallPaint = TextPaint(
     style: const TextStyle(
       fontFamily: 'Courier',

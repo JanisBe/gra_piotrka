@@ -6,7 +6,7 @@ import 'package:gra_piotrka/game/components/obstacle_component.dart';
 
 class BulletComponent extends PositionComponent with CollisionCallbacks {
   static const double _speed = 400.0;
-  
+
   BulletComponent({
     required Vector2 position,
   }) : super(
@@ -46,18 +46,20 @@ class BulletComponent extends PositionComponent with CollisionCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
-    
+
     // Zapiernicz do przodu
     position.x += _speed * dt;
 
     // Usuń jak wyleci poza ekran
-    if (position.x > 1500) { // Wystarczający margines, by zniknęło poza ekranem
+    if (position.x > 1500) {
+      // Wystarczający margines, by zniknęło poza ekranem
       removeFromParent();
     }
   }
 
   @override
-  void onCollisionStart(Set<Vector2> intersectionPoints, PositionComponent other) {
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is ObstacleComponent) {
       removeFromParent(); // Destroy bullet

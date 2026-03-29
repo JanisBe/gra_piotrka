@@ -60,7 +60,8 @@ class CorridorGenerator extends Component with HasGameReference {
     // Remove fully off-screen children.
     removeAll(
       children
-          .where((c) => c is PositionComponent && c.position.x + columnWidth < 0)
+          .where(
+              (c) => c is PositionComponent && c.position.x + columnWidth < 0)
           .toList(),
     );
 
