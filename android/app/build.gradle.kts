@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.gra_piotrka"
+    namespace = "com.piotrek.gra_piotrka"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -18,10 +18,15 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def name = "gra_piotrka-${variant.name}.apk"
+            outputFileName = name
+        }
+    }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.gra_piotrka"
+        applicationId = "com.piotrek.gra_piotrka"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

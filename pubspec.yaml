@@ -1,5 +1,5 @@
 name: gra_piotrka
-description: "ASCII Airplane Corridor Game"
+description: "Gra Piotra o lataniu samolotem"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -17,6 +17,19 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  web:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+  windows:
+    generate: true
+    image_path: "assets/images/app_icon.png"
+    icon_size: 256
 
 flutter:
   uses-material-design: true
