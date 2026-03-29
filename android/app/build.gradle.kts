@@ -19,8 +19,10 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
     applicationVariants.all {
+        val variantName = name
         outputs.all {
-            val apkName = "gra_piotrka-${name}.apk"
+            val suffix = if (variantName == "release") "" else "-${variantName}"
+            val apkName = "gra_piotrka${suffix}.apk"
             (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = apkName
         }
     }

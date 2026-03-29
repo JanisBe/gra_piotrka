@@ -53,7 +53,7 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gra-Piotrka          # bez .apk — GitHub sam dodaje rozszerzenie
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: gra-Piotrka          # nazwa artefaktu (paczki ZIP na GitHubie)
+          path: build/app/outputs/apk/release/gra_piotrka.apk
           retention-days: 30         # zamiast domyślnych 90 dni
           if-no-files-found: error   # jawny błąd gdy APK nie powstał
