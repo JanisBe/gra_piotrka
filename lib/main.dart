@@ -61,7 +61,8 @@ class _AirplaneAppState extends State<AirplaneApp> {
               level: _currentLevel,
               initialBullets: _bullets,
               onExit: _exitToMenu,
-              onNextLevel: (remaining) => _startGame(_currentLevel + 1, carriedBullets: remaining),
+              onNextLevel: (remaining) =>
+                  _startGame(_currentLevel + 1, carriedBullets: remaining),
             )
           : MainMenuScreen(onStart: () => _startGame(1)),
     );
@@ -238,7 +239,7 @@ class _HudOverlayState extends State<_HudOverlay> implements GameObserver {
           ),
           // -------- UP button --------
           Positioned(
-            bottom: 90,
+            bottom: 114,
             right: 24,
             child: _GameButton(
               label: '▲ GÓRA',
@@ -324,7 +325,7 @@ class _GameButton extends StatelessWidget {
       onTapUp: (_) => onUp(),
       onTapCancel: onUp,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.white54, width: 1.5),
           color: Colors.white10,

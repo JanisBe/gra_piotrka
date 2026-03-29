@@ -18,12 +18,13 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            def name = "gra_piotrka-${variant.name}.apk"
-            outputFileName = name
+    applicationVariants.all {
+        outputs.all {
+            val apkName = "gra_piotrka-${name}.apk"
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = apkName
         }
     }
+    
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.piotrek.gra_piotrka"
