@@ -2,11 +2,13 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gra_piotrka/game/corridor_game.dart';
 
 /// ASCII airplane controlled by the player.
 /// Supports on-screen buttons AND arrow keys (via Flutter Focus in _GamePage).
-class PlayerComponent extends PositionComponent with CollisionCallbacks {
+class PlayerComponent extends PositionComponent
+    with CollisionCallbacks, KeyboardHandler {
   static const double _verticalSpeed = 220;
 
   bool _movingUp = false;
@@ -15,6 +17,33 @@ class PlayerComponent extends PositionComponent with CollisionCallbacks {
   final CorridorGame gameRef;
 
   static const double _fontSize = 20;
+
+  @override
+  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    debugPrint('KEY EVENT: ${event.logicalKey.debugName}');
+    if (gameRef.overlays.isActive('gameOver') || 
+        gameRef.overlays.isActive('levelComplete')) {
+      return false;
+    }
+
+    final isDown = event is KeyDownEvent || event is KeyRepeatEvent;
+    final key = event.logicalKey;
+
+    if (key == LogicalKeyboardKey.arrowUp || key == LogicalKeyboardKey.keyW) {
+      _movingUp = isDown;
+      return true;
+    } else if (key == LogicalKeyboardKey.arrowDown || key == LogicalKeyboardKey.keyS) {
+      _movingDown = isDown;
+      return true;
+    } else if (key == LogicalKeyboardKey.space && event is KeyDownEvent) {
+      gameRef.fireBullet();
+      return true;
+    }
+
+    return super.onKeyEvent(event, keysPressed);
+  }
+
+
   static const double _glyphWidth = 80;
   static const double _glyphHeight = 24;
 

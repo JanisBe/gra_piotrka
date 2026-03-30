@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flame/game.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gra_piotrka/game/components/corridor_generator.dart';
 import 'package:gra_piotrka/game/components/player_component.dart';
 import 'package:gra_piotrka/game/components/explosion_component.dart';
@@ -12,7 +12,8 @@ abstract class GameObserver {
 }
 
 /// Main Flame game class.
-class CorridorGame extends FlameGame with HasCollisionDetection {
+class CorridorGame extends FlameGame
+    with HasCollisionDetection, HasKeyboardHandlerComponents {
   final int level;
   final VoidCallback onExit;
   final VoidCallback onNextLevel;
@@ -88,16 +89,6 @@ class CorridorGame extends FlameGame with HasCollisionDetection {
 
     if (_elapsed >= levelDurationSeconds) {
       _triggerLevelComplete();
-    }
-  }
-
-  /// Arrow-key handling forwarded from Flutter's keyboard.
-  void onArrowKey(LogicalKeyboardKey key, bool pressed) {
-    if (_gameOver || _levelComplete) return;
-    if (key == LogicalKeyboardKey.arrowUp) {
-      pressed ? player.startMovingUp() : player.stopMovingUp();
-    } else if (key == LogicalKeyboardKey.arrowDown) {
-      pressed ? player.startMovingDown() : player.stopMovingDown();
     }
   }
 

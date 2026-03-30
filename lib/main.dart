@@ -1,4 +1,5 @@
 import 'package:flame/game.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gra_piotrka/game/corridor_game.dart';
@@ -101,6 +102,9 @@ class _GamePageState extends State<_GamePage> {
       onNextLevel: () => widget.onNextLevel(_game.bullets),
       initialBullets: widget.initialBullets,
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
   }
 
   @override
@@ -109,54 +113,42 @@ class _GamePageState extends State<_GamePage> {
     super.dispose();
   }
 
-  void _handleKey(KeyEvent event) {
-    final key = event.logicalKey;
-    final pressed = event is KeyDownEvent || event is KeyRepeatEvent;
-    _game.onArrowKey(key, pressed);
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Focus forwards arrow-key events to the game via _handleKey.
-    return Focus(
-      autofocus: true,
+    return GameWidget(
+      game: _game,
       focusNode: _focusNode,
-      onKeyEvent: (node, event) {
-        _handleKey(event);
-        return KeyEventResult.handled;
-      },
-      child: GameWidget(
-        game: _game,
-        overlayBuilderMap: {
-          'hud': (context, game) {
-            final g = game as CorridorGame;
-            return _HudOverlay(game: g);
-          },
-          'gameOver': (context, game) {
-            final g = game as CorridorGame;
-            return _GameOverOverlay(
-              onRestart: () {
-                g.overlays.remove('gameOver');
-                g.restartGame();
-              },
-              onExit: widget.onExit,
-            );
-          },
-          'levelComplete': (context, game) {
-            final g = game as CorridorGame;
-            return _LevelCompleteOverlay(
-              onNextLevel: () {
-                g.overlays.remove('levelComplete');
-                widget.onNextLevel(g.bullets);
-              },
-              onExit: widget.onExit,
-            );
-          },
+      autofocus: true,
+      overlayBuilderMap: {
+        'hud': (context, game) {
+          final g = game as CorridorGame;
+          return _HudOverlay(game: g);
         },
-        initialActiveOverlays: const ['hud'],
-      ),
+        'gameOver': (context, game) {
+          final g = game as CorridorGame;
+          return _GameOverOverlay(
+            onRestart: () {
+              g.overlays.remove('gameOver');
+              g.restartGame();
+            },
+            onExit: widget.onExit,
+          );
+        },
+        'levelComplete': (context, game) {
+          final g = game as CorridorGame;
+          return _LevelCompleteOverlay(
+            onNextLevel: () {
+              g.overlays.remove('levelComplete');
+              widget.onNextLevel(g.bullets);
+            },
+            onExit: widget.onExit,
+          );
+        },
+      },
+      initialActiveOverlays: const ['hud'],
     );
   }
+
 }
 
 // ---------------------------------------------------------------------------
@@ -192,6 +184,10 @@ class _HudOverlayState extends State<_HudOverlay> implements GameObserver {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS);
+
     return SafeArea(
       child: Stack(
         children: [
@@ -237,36 +233,39 @@ class _HudOverlayState extends State<_HudOverlay> implements GameObserver {
               ),
             ),
           ),
-          // -------- UP button --------
-          Positioned(
-            bottom: 114,
-            right: 24,
-            child: _GameButton(
-              label: '▲ GÓRA',
-              onDown: () => widget.game.player.startMovingUp(),
-              onUp: () => widget.game.player.stopMovingUp(),
+
+          if (isMobile) ...[
+            // -------- UP button --------
+            Positioned(
+              bottom: 114,
+              right: 24,
+              child: _GameButton(
+                label: '▲ GÓRA',
+                onDown: () => widget.game.player.startMovingUp(),
+                onUp: () => widget.game.player.stopMovingUp(),
+              ),
             ),
-          ),
-          // -------- DOWN button --------
-          Positioned(
-            bottom: 24,
-            right: 24,
-            child: _GameButton(
-              label: '▼ DÓŁ',
-              onDown: () => widget.game.player.startMovingDown(),
-              onUp: () => widget.game.player.stopMovingDown(),
+            // -------- DOWN button --------
+            Positioned(
+              bottom: 24,
+              right: 24,
+              child: _GameButton(
+                label: '▼ DÓŁ',
+                onDown: () => widget.game.player.startMovingDown(),
+                onUp: () => widget.game.player.stopMovingDown(),
+              ),
             ),
-          ),
-          // -------- FIRE button --------
-          Positioned(
-            bottom: 24,
-            left: 24,
-            child: _GameButton(
-              label: 'OGIEŃ',
-              onDown: () => widget.game.fireBullet(),
-              onUp: () {},
+            // -------- FIRE button --------
+            Positioned(
+              bottom: 24,
+              left: 24,
+              child: _GameButton(
+                label: 'OGIEŃ',
+                onDown: () => widget.game.fireBullet(),
+                onUp: () {},
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

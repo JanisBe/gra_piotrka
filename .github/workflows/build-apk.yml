@@ -25,10 +25,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -51,7 +51,7 @@ jobs:
             --split-debug-info=build/debug-info  # utrudnia reverse engineering
 
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: gra-Piotrka          # nazwa artefaktu (paczki ZIP na GitHubie)
           path: build/app/outputs/apk/release/gra_piotrka.apk
