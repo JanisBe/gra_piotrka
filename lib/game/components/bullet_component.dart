@@ -3,6 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 import 'package:gra_piotrka/game/components/obstacle_component.dart';
+import 'package:gra_piotrka/game/components/explosion_component.dart';
 
 class BulletComponent extends PositionComponent with CollisionCallbacks {
   static const double _speed = 400.0;
@@ -62,6 +63,9 @@ class BulletComponent extends PositionComponent with CollisionCallbacks {
       Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is ObstacleComponent) {
+      // Create explosion at current position
+      parent?.add(ExplosionComponent(position: position.clone()));
+      
       removeFromParent(); // Destroy bullet
       other.takeHit(position.y); // Create hole
     }

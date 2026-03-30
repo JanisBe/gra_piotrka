@@ -17,6 +17,7 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
   final int rows; // 1-6
 
   late final TextPaint _paint;
+  late final double _rotationSpeed;
 
   static const List<Color> _obstacleColors = [
     Color(0xFFDE1040),
@@ -33,9 +34,18 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
     required this.cols,
     required this.rows,
   }) : super(
-          position: position,
           size: Vector2(cols * charW, rows * charH),
+          anchor: Anchor.center,
         ) {
+    // Treat the incoming position as top-left and shift to center.
+    this.position = position + size / 2;
+
+    // Random initial rotation.
+    angle = _random.nextDouble() * 2 * pi;
+
+    // Random speed: -2.0 to 2.0 rad/s.
+    _rotationSpeed = (_random.nextDouble() - 0.5) * 4.0;
+
     final color = _obstacleColors[_random.nextInt(_obstacleColors.length)];
     _paint = TextPaint(
       style: TextStyle(
@@ -77,13 +87,20 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
     );
   }
 
+  @override
+  void update(double dt) {
+    super.update(dt);
+    angle += _rotationSpeed * dt;
+  }
+
   void takeHit(double hitY) {
     // 60px hole centered at hitY
     final holeTop = hitY - 30; // Absolute Y
     final holeBottom = hitY + 30; // Absolute Y
 
-    final myTop = position.y;
-    final myBottom = position.y + size.y;
+    final myTop = position.y - size.y / 2;
+    final myBottom = position.y + size.y / 2;
+    final myLeft = position.x - size.x / 2;
 
     // We split into top piece and bottom piece
     // Top piece goes from myTop to holeTop
@@ -91,7 +108,7 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
       final topRows = ((holeTop - myTop) / charH).floor();
       if (topRows > 0) {
         parent?.add(ObstacleComponent(
-          position: Vector2(position.x, position.y),
+          position: Vector2(myLeft, myTop),
           char: char,
           cols: cols,
           rows: topRows,
@@ -106,7 +123,7 @@ class ObstacleComponent extends PositionComponent with CollisionCallbacks {
         // bottom Y
         final bottomPieceY = myBottom - (bottomRows * charH);
         parent?.add(ObstacleComponent(
-          position: Vector2(position.x, bottomPieceY),
+          position: Vector2(myLeft, bottomPieceY),
           char: char,
           cols: cols,
           rows: bottomRows,
