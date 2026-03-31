@@ -184,9 +184,8 @@ class _HudOverlayState extends State<_HudOverlay> implements GameObserver {
 
   @override
   Widget build(BuildContext context) {
-    final isMobile = !kIsWeb &&
-        (defaultTargetPlatform == TargetPlatform.android ||
-            defaultTargetPlatform == TargetPlatform.iOS);
+    final isMobile = defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
 
     return SafeArea(
       child: Stack(
